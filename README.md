@@ -15,5 +15,5 @@ pipenv install
 create a .env file with the following:
 
 ```
-export OPENAI_API_KEY = "Your OpenAI API token"
+OPENAI_API_KEY = "Your OpenAI API token"
 ```
