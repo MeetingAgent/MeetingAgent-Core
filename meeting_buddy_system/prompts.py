@@ -1,9 +1,11 @@
-MESSAGE_BUDDY_MAIN_PROMPT = """
+MEETING_BUDDY_MAIN_PROMPT = """
 <!-->IMPORTANT CONTEXT<--!>
 An answer should be coherent and include some point form arguments.
 <!-->IMPORTANT CONTEXT<--!>
 
-Given a question, answer it in the best way possible.
+Here is context for the meeting: {meeting_context}
+
+Given a question, answer it coherently and explain all possible points that can be derived from the question.
 """
 
 EXTRACT_QUERY_PROMPT = """
