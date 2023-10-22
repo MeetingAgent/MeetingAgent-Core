@@ -21,3 +21,7 @@ OPENAI_API_KEY = "Your OpenAI API token"
 ## Demo Image
 
 ![Alt text](docs/image.png)
+
+## TODOs 
+
+There is a lot to do. This is a very bare bones app and a lot of the code is messy and needs to be refactored. 
