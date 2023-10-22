@@ -17,3 +17,7 @@ create a .env file with the following:
 ```
 OPENAI_API_KEY = "Your OpenAI API token"
 ```
+
+## Demo Image
+
+![Alt text](docs/image.png)
