@@ -114,7 +114,7 @@ class MeetingBuddyApp(App):
         )
 
         start_button = Button(
-            text='Start Meeting Buddy',
+            text='Start Recording',
             on_release=self.start_meeting_buddy,
             size_hint=(1, 0.1),
             font_size='20sp'
