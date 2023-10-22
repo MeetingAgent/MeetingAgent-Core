@@ -14,7 +14,7 @@ asynckivy = "*"
 twisted = "*"
 python-dotenv = "*"
 gtts = "*"
-pydub = "*"
+pygame = "*"
 fasttext-langdetect = "*"
 
 [dev-packages]

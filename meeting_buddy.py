@@ -20,7 +20,7 @@ install_twisted_reactor()
 # text to speech
 from gtts import gTTS
 from pydub import AudioSegment
-from pydub.playback import play
+import pygame
 from ftlangdetect import detect
 
 # Local
@@ -72,9 +72,15 @@ def text_to_speech(text: str, output_file='audio_output/output.mp3') -> None:
     tts.save(output_file)
     print(f'Audio saved as {output_file}')
 
+# initialize mixer
+pygame.mixer.init()
+
 def play_audio(file_path):
-    audio = AudioSegment.from_mp3(file_path)
-    play(audio)
+    pygame.mixer.music.load(file_path)
+    pygame.mixer.music.play()
+
+def stop_audio_playback():
+    pygame.mixer.music.stop()
 
 def gpt_pipeline(meeting_context: str, input_text: str) -> str:
     """
@@ -201,6 +207,8 @@ class MeetingBuddyApp(App):
         global audio_thread  
         audio_thread = threading.Thread(target=meeting_buddy, args=(meeting_context,))
         audio_thread.start() 
+
+        stop_audio_playback()
 
     def stop_recording(self, instance):
         stop_audio()
