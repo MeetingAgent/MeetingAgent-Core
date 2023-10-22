@@ -1,7 +1,7 @@
 {
     "_meta": {
         "hash": {
-            "sha256": "a984a1227d5e967ce3c44edefda9f681b6e31e8f47a111d6dd3301d0b52fa52c"
+            "sha256": "f7f14f086564898d71f5426eb367429d3e62acfe6a3fa29dbb3e35b1ed708ecc"
         },
         "pipfile-spec": 6,
         "requires": {
@@ -292,6 +292,19 @@
             ],
             "markers": "python_version >= '3.7'",
             "version": "==0.20.1"
+        },
+        "fasttext": {
+            "hashes": [
+                "sha256:665556f1f6dcb4fcbe25fa8ebcd4f71b18fa96a090de09d88d97a60cbd29dcb5"
+            ],
+            "version": "==0.9.2"
+        },
+        "fasttext-langdetect": {
+            "hashes": [
+                "sha256:d1e4f797b0e739ad4946a6f7cd511d7c75cfa3eea3aa70de07d75e07713db17f"
+            ],
+            "index": "pypi",
+            "version": "==1.0.5"
         },
         "filelock": {
             "hashes": [
@@ -752,6 +765,14 @@
             ],
             "index": "pypi",
             "version": "==0.2.13"
+        },
+        "pybind11": {
+            "hashes": [
+                "sha256:00cd59116a6e8155aecd9174f37ba299d1d397ed4a6b86ac1dfe01b3e40f2cc4",
+                "sha256:33cdd02a6453380dd71cc70357ce388ad1ee8d32bd0e38fc22b273d050aa29b3"
+            ],
+            "markers": "python_version >= '3.6'",
+            "version": "==2.11.1"
         },
         "pydub": {
             "hashes": [

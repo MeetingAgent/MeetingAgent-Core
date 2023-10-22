@@ -3,11 +3,14 @@ import pyaudio
 import wave
 import whisper
 import threading
+import time
 
 # GUI 
 from kivy.app import App
 from kivy.uix.button import Button
 from kivy.uix.boxlayout import BoxLayout
+from kivy.uix.switch import Switch
+from kivy.uix.label import Label
 from kivy.clock import Clock
 from kivy.uix.textinput import TextInput 
 from kivy.core.window import Window
@@ -18,6 +21,7 @@ install_twisted_reactor()
 from gtts import gTTS
 from pydub import AudioSegment
 from pydub.playback import play
+from ftlangdetect import detect
 
 # Local
 from meeting_buddy_system.gpt_utils import gpt_4_answer, gpt_3_5_turbo_16k_answer
@@ -54,12 +58,17 @@ def stop_audio() -> None:
     recording = False
 
 def whisper_process_audio(audio_file: str) -> str:
-    model = whisper.load_model("base")
+    model = whisper.load_model("base") # for multilingual
     result = model.transcribe(audio_file)
     return result["text"]
 
-def text_to_speech(text, lang='en', output_file='audio_output/output.mp3'):
-    tts = gTTS(text=text, lang=lang, slow=False)
+def detect_language(text: str) -> str:
+    cleaned_text = text.replace('\n', ' ')
+    return detect(text=cleaned_text, low_memory=True)
+
+def text_to_speech(text: str, output_file='audio_output/output.mp3') -> None:
+    language = detect_language(text=text)["lang"]
+    tts = gTTS(text=text, lang=language, slow=False)
     tts.save(output_file)
     print(f'Audio saved as {output_file}')
 
@@ -74,21 +83,27 @@ def gpt_pipeline(meeting_context: str, input_text: str) -> str:
 
     print("\n\n\n###### EXTRACTING QUERY FROM TEXT ######\n\n\n")
     messages = [{"role": "system", "content": EXTRACT_QUERY_PROMPT}, {"role": "user", "content": input_text}]
-    query = gpt_4_answer(messages=messages)
+    query = gpt_3_5_turbo_16k_answer(messages=messages)
     full_query_text = f"Extracted Query: {query}"
     print("\n\n\n###### FINISHED EXTRACTING QUERY FROM TEXT ######\n\n\n")
 
     print("\n\n\n###### RESPONDING TO QUERY ######\n\n\n")
     messages = [{"role": "system", "content": MEETING_BUDDY_MAIN_PROMPT.format(meeting_context=meeting_context)}, {"role": "user", "content": query}]
-    answer = gpt_3_5_turbo_16k_answer(messages=messages)
+    answer = gpt_4_answer(messages=messages)
     full_answer_text = f"Answer: {answer}"
     print("\n\n\n###### RESPONDED TO QUERY ######\n\n\n")
 
     aggregated_text = full_query_text + "\n\n" + full_answer_text
-    Clock.schedule_once(lambda dt: app.update_answer_text(aggregated_text))
 
-    text_to_speech(answer)
-    play_audio('audio_output/output.mp3')
+    if app.tts_switch.active:
+        # getting text to speech response
+        text_to_speech(answer)
+        Clock.schedule_once(lambda dt: app.update_answer_text(aggregated_text))
+        play_audio('audio_output/output.mp3')
+
+    else:
+        # Update the answer text without text-to-speech
+        Clock.schedule_once(lambda dt: app.update_answer_text(aggregated_text))
 
     return query, answer
 
@@ -136,6 +151,9 @@ class MeetingBuddyApp(App):
             size_hint=(1, 0.1),
             font_size='20sp'
         )
+
+        stop_button_layout = BoxLayout(orientation='vertical', spacing=10, size_hint=(1, 0.3))
+
         stop_button = Button(
             text='Stop Recording',
             on_release=self.stop_recording,
@@ -143,10 +161,32 @@ class MeetingBuddyApp(App):
             font_size='20sp'
         )
 
+        switch_layout = BoxLayout(
+            orientation='horizontal',
+            spacing=10, 
+            size_hint=(None, None),
+            size=(200, 175), 
+            pos_hint={'center_x': 0.5}
+        )
+
+        tts_label = Label(
+            text='Text to Speech:',
+            size_hint=(None, None),
+            size=(0, 200)
+        )
+    
+        self.tts_switch = Switch(size_hint=(None, None), size=(400, 200))
+
+        switch_layout.add_widget(tts_label)
+        switch_layout.add_widget(self.tts_switch)
+
+        stop_button_layout.add_widget(stop_button)
+        stop_button_layout.add_widget(switch_layout)
+
         layout = BoxLayout(orientation='vertical', spacing=10, padding=10)
         layout.add_widget(self.context_input)
         layout.add_widget(start_button)
-        layout.add_widget(stop_button)
+        layout.add_widget(stop_button_layout) 
         layout.add_widget(self.answer_output)
 
         return layout
@@ -166,6 +206,11 @@ class MeetingBuddyApp(App):
         stop_audio()
         if self.audio_thread is not None:
             self.audio_thread.join()
+
+        Clock.schedule_once(self.delayed_update, 1)
+
+    def delayed_update(self, dt):
+        self.update_answer_text("Getting answer...")
 
 if __name__ == "__main__":
     print("\n\n###### STARTING MEETING BUDDY ######\n\n")

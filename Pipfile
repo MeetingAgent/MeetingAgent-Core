@@ -15,6 +15,7 @@ twisted = "*"
 python-dotenv = "*"
 gtts = "*"
 pydub = "*"
+fasttext-langdetect = "*"
 
 [dev-packages]
 
