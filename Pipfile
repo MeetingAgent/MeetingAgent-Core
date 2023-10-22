@@ -13,6 +13,8 @@ kivy = "*"
 asynckivy = "*"
 twisted = "*"
 python-dotenv = "*"
+gtts = "*"
+pydub = "*"
 
 [dev-packages]
 

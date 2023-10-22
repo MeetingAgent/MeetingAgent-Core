@@ -14,6 +14,11 @@ from kivy.core.window import Window
 from kivy.support import install_twisted_reactor
 install_twisted_reactor()
 
+# text to speech
+from gtts import gTTS
+from pydub import AudioSegment
+from pydub.playback import play
+
 # Local
 from meeting_buddy_system.gpt_utils import gpt_4_answer, gpt_3_5_turbo_16k_answer
 from meeting_buddy_system.prompts import MEETING_BUDDY_MAIN_PROMPT, EXTRACT_QUERY_PROMPT
@@ -53,6 +58,15 @@ def whisper_process_audio(audio_file: str) -> str:
     result = model.transcribe(audio_file)
     return result["text"]
 
+def text_to_speech(text, lang='en', output_file='audio_output/output.mp3'):
+    tts = gTTS(text=text, lang=lang, slow=False)
+    tts.save(output_file)
+    print(f'Audio saved as {output_file}')
+
+def play_audio(file_path):
+    audio = AudioSegment.from_mp3(file_path)
+    play(audio)
+
 def gpt_pipeline(meeting_context: str, input_text: str) -> str:
     """
     Extract query from text and produce the final answer to query.
@@ -72,6 +86,9 @@ def gpt_pipeline(meeting_context: str, input_text: str) -> str:
 
     aggregated_text = full_query_text + "\n\n" + full_answer_text
     Clock.schedule_once(lambda dt: app.update_answer_text(aggregated_text))
+
+    text_to_speech(answer)
+    play_audio('audio_output/output.mp3')
 
     return query, answer
 
