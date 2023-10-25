@@ -1,0 +1,7 @@
+# Voice Cloning Pipeline for custom Text to Speech
+
+## Paragraph to Read for Audio Recording
+
+Upload a .wav audio sample of you reading the below text to the voice_cloning/audio_samples/ directory.
+
+`Once upon a vibrant morning in early spring, Xavier, a keen young botanist from Quebec, embarked on a quaint journey across the knolls and dales of Yellowstone. His zest for flora led him to observe the exquisite orchids blooming amidst the zephyrs. He jotted down notes in a neat, meticulous hand, capturing the essence of each observation. The juxtaposition of junipers and jack pines painted a picturesque panorama, a kaleidoscope of greens under the azure sky. He often hummed a melody that resonated with the serenity of nature, evoking a symphony that harmonized with the rustle of leaves and chirping of birds. Amidst the verdant foliage, Xavier unearthed a rare, vermilion flower, its fragrance wafting gently through the tranquil vale. His journey encapsulated a myriad of experiences, from the euphony of dawn to the velvety silence of dusk, each moment etching indelible impressions upon his soul. The wilderness echoed with whispers of wonder, enunciating the eternal enchantment of nature's tapestry.`
