@@ -18,10 +18,14 @@ create a .env file with the following:
 OPENAI_API_KEY = "Your OpenAI API token"
 ```
 
+## Voice Cloning Text to Speech Pipeline
+
+read more at: [Voice Cloning Readme](voice_cloning/README.md)
+
 ## Demo Image
 
 ![Alt text](docs/image.png)
 
-## TODOs 
+## TODOs
 
-There is a lot to do. This is a very bare bones app and a lot of the code is messy and needs to be refactored. 
+There is a lot to do. This is a very bare bones app and a lot of the code is messy and needs to be refactored.

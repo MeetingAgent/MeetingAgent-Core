@@ -161,4 +161,4 @@ cython_debug/
 
 
 # Audio files
-audio_output/
+meeting_buddy_audio/

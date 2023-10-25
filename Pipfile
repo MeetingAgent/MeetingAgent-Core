@@ -16,7 +16,7 @@ python-dotenv = "*"
 gtts = "*"
 pygame = "*"
 fasttext-langdetect = "*"
-TTS = "*" 
+TTS = "0.17.8" 
 
 [dev-packages]
 

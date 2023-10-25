@@ -17,11 +17,14 @@ from kivy.core.window import Window
 from kivy.support import install_twisted_reactor
 install_twisted_reactor()
 
-# text to speech
+# gtts text to speech
 from gtts import gTTS
 from pydub import AudioSegment
 import pygame
 from ftlangdetect import detect
+
+# personalized voice text to speech
+from voice_cloning.clone import MyTTS
 
 # Local
 from meeting_buddy_system.gpt_utils import gpt_4_answer, gpt_3_5_turbo_16k_answer
@@ -46,7 +49,7 @@ def get_audio() -> None:
         stream.stop_stream()
         stream.close()
         p.terminate()
-    wf = wave.open('audio_output/audio.wav', 'wb')
+    wf = wave.open('meeting_buddy_audio/input_audio.wav', 'wb')
     wf.setnchannels(1)
     wf.setsampwidth(p.get_sample_size(pyaudio.paInt16))
     wf.setframerate(44100)
@@ -66,10 +69,14 @@ def detect_language(text: str) -> str:
     cleaned_text = text.replace('\n', ' ')
     return detect(text=cleaned_text, low_memory=True)
 
-def text_to_speech(text: str, output_file='audio_output/output.mp3') -> None:
+def gtts_text_to_speech(text: str, output_file='meeting_buddy_audio/output.mp3') -> None:
     language = detect_language(text=text)["lang"]
     tts = gTTS(text=text, lang=language, slow=False)
     tts.save(output_file)
+    print(f'Audio saved as {output_file}')
+
+def voice_clone_text_to_speech(text: str, output_file='meeting_buddy_audio/output.wav') -> None:
+    app.tts.text_to_speech(text, output_file)
     print(f'Audio saved as {output_file}')
 
 # initialize mixer
@@ -102,10 +109,18 @@ def gpt_pipeline(meeting_context: str, input_text: str) -> str:
     aggregated_text = full_query_text + "\n\n" + full_answer_text
 
     if app.tts_switch.active:
-        # getting text to speech response
-        text_to_speech(answer)
-        Clock.schedule_once(lambda dt: app.update_answer_text(aggregated_text))
-        play_audio('audio_output/output.mp3')
+        try: 
+            print("\n\n###### GETTING TTS TEXT TO SPEECH RESPONSE ######\n\n")
+            # getting custom voice text to speech response
+            voice_clone_text_to_speech(answer)
+            Clock.schedule_once(lambda dt: app.update_answer_text(aggregated_text))
+            play_audio('meeting_buddy_audio/output.wav')
+        except:
+            print("\n\n###### GETTING GTTS TEXT TO SPEECH RESPONSE ######\n\n")
+            # getting gtts text to speech response
+            gtts_text_to_speech(answer)
+            Clock.schedule_once(lambda dt: app.update_answer_text(aggregated_text))
+            play_audio('meeting_buddy_audio/output.mp3')
 
     else:
         # Update the answer text without text-to-speech
@@ -119,7 +134,7 @@ def meeting_buddy(meeting_context: str) -> None:
     audio_thread.start()
     audio_thread.join() 
 
-    input_text = whisper_process_audio("audio_output/audio.wav")
+    input_text = whisper_process_audio("meeting_buddy_audio/audio.wav")
     question, answer = gpt_pipeline(meeting_context=meeting_context, input_text=input_text)
 
     print(f"Question: {question}")
@@ -139,6 +154,10 @@ class MeetingBuddyApp(App):
             background_color=[0, 0, 0, 1],
             foreground_color=[1, 1, 1, 1]
         )
+        self.tts = None
+
+    def on_start(self):
+        self.load_tts_model()
 
     def build(self):
         self.answer_output = TextInput(
@@ -219,6 +238,12 @@ class MeetingBuddyApp(App):
 
     def delayed_update(self, dt):
         self.update_answer_text("Getting answer...")
+
+    def load_tts_model(self):
+        self.tts = MyTTS()
+
+        # use default speaker for testing
+        self.tts.use_default_speaker = True
 
 if __name__ == "__main__":
     print("\n\n###### STARTING MEETING BUDDY ######\n\n")
