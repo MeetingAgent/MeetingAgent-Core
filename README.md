@@ -1,7 +1,6 @@
 # Meeting-Buddy
 
-![Uploading DALL·E 2023-11-06 13.59.52 - Design a sleek and modern logo for a meeting app that features an intelligent agent with perfect voice cloning capabilities. The logo should symbolize.png…]()
-
+![DALL·E 2023-11-06 13 59 52 - Design a sleek and modern logo for a meeting app that features an intelligent agent with perfect voice cloning capabilities  The logo should symbolize](https://github.com/AndreSlavescu/Meeting-Buddy/assets/51034490/05164111-1b43-4655-a4b1-d9d1706f32ee)
 
 automate answering in live meetings by generating readable scripts on the fly
 
