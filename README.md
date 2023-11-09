@@ -6,7 +6,7 @@ automate answering in live meetings by generating readable scripts on the fly
 
 ## Installation and Setup
 
-### MacOs
+### MacOS Setup
 
 ```
 brew install portaudio ffmpeg
